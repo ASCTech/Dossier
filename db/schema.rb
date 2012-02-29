@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120229234146) do
+ActiveRecord::Schema.define(:version => 20120229234321) do
+
+  create_table "document_tags", :force => true do |t|
+    t.integer  "document_id"
+    t.integer  "tag_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "document_tags", ["document_id"], :name => "index_document_tags_on_document_id"
+  add_index "document_tags", ["tag_id"], :name => "index_document_tags_on_tag_id"
 
   create_table "documents", :force => true do |t|
     t.integer  "owner_id"
