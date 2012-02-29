@@ -11,13 +11,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120229230712) do
+ActiveRecord::Schema.define(:version => 20120229231955) do
 
   create_table "documents", :force => true do |t|
     t.integer  "owner_id"
     t.integer  "source_system_id"
     t.integer  "uploader_id"
     t.datetime "created_at",       :null => false
+  end
+
+  create_table "source_systems", :force => true do |t|
+    t.string   "name"
+    t.string   "api_key"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
 end
