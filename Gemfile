@@ -5,6 +5,7 @@ gem 'rails', '3.2.1'
 gem 'sqlite3', :group => [:test, :development]
 gem 'mysql2',  :group => [:production]
 
+gem 'carrierwave'
 gem 'jquery-rails'
 gem 'json'
 
