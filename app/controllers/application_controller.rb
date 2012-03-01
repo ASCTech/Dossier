@@ -7,11 +7,6 @@ protected
     SourceSystem.find_by_api_key(request.headers['x-api-key'])
   end
 
-  def render_403(message='')
-    message = 'Not authorized' if message.empty?
-    render_error 403, message
-  end
-
   def render_error(status, message)
     respond_to do |format|
       format.html { render :file => "#{Rails.root}/public/#{status}.html", :status => status, :layout => false }

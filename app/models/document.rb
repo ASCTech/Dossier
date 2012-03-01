@@ -14,4 +14,6 @@ class Document < ActiveRecord::Base
     source_system == system
   end
 
+  class NotAuthorized < StandardError; end
+
 end
