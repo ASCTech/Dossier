@@ -4,17 +4,14 @@ class DocumentsController < ApplicationController
 
   respond_to :xml, :json
 
+  rescue_from ActiveRecord::RecordNotFound, :with => :document_not_found
+
   def index
     respond_with Document.from_system(requesting_system)
   end
 
   def show
-    begin
-      @document = Document.find(params[:id])
-    rescue
-      render_404 "Document with ID #{params[:id]} not found"
-      return
-    end
+    @document = Document.find(params[:id])
 
     if @document.from_system? requesting_system
       respond_with @document
@@ -28,6 +25,10 @@ private
   def require_api_key
     return if requesting_system
     render_403 'You do not have a valid API key'
+  end
+
+  def document_not_found
+    render_error 404, "Document with ID #{params[:id]} not found"
   end
 
 end
