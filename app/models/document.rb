@@ -14,6 +14,18 @@ class Document < ActiveRecord::Base
     source_system == system
   end
 
+  def serializable_hash(options=nil)
+    options = {} if options.nil?
+    options[:except] = :file
+    options[:include] = :tags
+    options[:methods] = :all_tags
+    super options
+  end
+
+  def all_tags
+    tags.map(&:name)
+  end
+
   class NotAuthorized < StandardError; end
 
 end
