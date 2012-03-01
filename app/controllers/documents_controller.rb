@@ -2,12 +2,14 @@ class DocumentsController < ApplicationController
 
   before_filter :require_api_key
 
+  respond_to :xml, :json
+
   def index
-    @documents = Document.where(:source_system_id => requesting_system.id)
-    respond_to do |format|
-      format.json { render :json => @documents }
-      format.xml  { render :xml  => @documents }
-    end
+    respond_with Document.from_system(requesting_system)
+  end
+
+  def show
+    respond_with Document.from_system(requesting_system).find(params[:id])
   end
 
 private

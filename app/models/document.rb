@@ -6,4 +6,8 @@ class Document < ActiveRecord::Base
 
   mount_uploader :file, FileUploader
 
+  def self.from_system(source_system)
+    where(:source_system_id => source_system.id)
+  end
+
 end

@@ -1,5 +1,5 @@
 Dossier::Application.routes.draw do
 
-  resources :documents, :only => [:index]
+  resources :documents, :only => [:index, :show]
 
 end
