@@ -28,6 +28,10 @@ class DocumentsController < ApplicationController
     respond_with Document.from_system(requesting_system).where(:owner_id => params[:owner_id])
   end
 
+  def destroy
+    respond_with requesting_system.get_document(params[:id]).destroy
+  end
+
 private
 
   def require_api_key
