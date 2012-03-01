@@ -20,6 +20,10 @@ class DocumentsController < ApplicationController
     send_file(doc_file.current_path, :filename => doc_file.identifier)
   end
 
+  def create
+    respond_with Document.create(params[:document].merge({ :source_system_id => requesting_system.id }))
+  end
+
 private
 
   def require_api_key
