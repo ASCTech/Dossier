@@ -15,6 +15,11 @@ class DocumentsController < ApplicationController
     respond_with requesting_system.get_document(params[:id])
   end
 
+  def file
+    doc_file = requesting_system.get_document(params[:document_id]).file
+    send_file(doc_file.current_path, :filename => doc_file.identifier)
+  end
+
 private
 
   def require_api_key
