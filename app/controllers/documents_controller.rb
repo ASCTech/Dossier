@@ -24,6 +24,10 @@ class DocumentsController < ApplicationController
     respond_with Document.create(params[:document].merge({ :source_system_id => requesting_system.id }))
   end
 
+  def owner
+    respond_with Document.from_system(requesting_system).where(:owner_id => params[:owner_id])
+  end
+
 private
 
   def require_api_key
