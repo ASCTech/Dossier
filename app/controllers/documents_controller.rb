@@ -9,7 +9,18 @@ class DocumentsController < ApplicationController
   end
 
   def show
-    respond_with Document.from_system(requesting_system).find(params[:id])
+    begin
+      @document = Document.find(params[:id])
+    rescue
+      render_404 "Document with ID #{params[:id]} not found"
+      return
+    end
+
+    if @document.from_system? requesting_system
+      respond_with @document
+    else
+      render_403 "#{requesting_system.name} does not have access to this document"
+    end
   end
 
 private
