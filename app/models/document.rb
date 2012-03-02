@@ -26,6 +26,12 @@ class Document < ActiveRecord::Base
     tags.map(&:name)
   end
 
+  def add_tags(string_of_tags)
+    string_of_tags.split(',').each do |tag_name|
+      document_tags.create!(:tag_id => Tag.find_or_create_by_name(tag_name).id)
+    end
+  end
+
   class NotAuthorized < StandardError; end
 
 end
