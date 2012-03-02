@@ -11,4 +11,8 @@ FactoryGirl.define do
     api_key '20tn20tnjo20480tn4n20429042j'
   end
 
+  factory :tag do
+    name 'mathematical'
+  end
+
 end

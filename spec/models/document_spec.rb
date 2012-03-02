@@ -6,6 +6,8 @@ describe Document do
 
   describe 'adding tags' do
 
+    let(:tag) { create(:tag) }
+
     it 'should create tags on the fly' do
       Tag.where(:name => 'cool').should_not exist
       Tag.where(:name => 'rad').should_not exist
@@ -24,6 +26,12 @@ describe Document do
       document.all_tags.should include('rad')
       document.tags.should include cool_tag
       document.tags.should include  rad_tag
+    end
+
+    it 'should not allow duplicate tags on a document' do
+      document.document_tags.create!(:tag_id => tag.id)
+      document.document_tags.new(:tag_id => tag.id).should_not be_valid
+      create(:document).document_tags.new(:tag_id => tag.id).should be_valid
     end
 
   end
