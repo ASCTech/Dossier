@@ -21,7 +21,9 @@ class DocumentsController < ApplicationController
   end
 
   def create
-    respond_with Document.create(params[:document].merge({ :source_system_id => requesting_system.id }))
+    document = Document.create(params[:document].merge({ :source_system_id => requesting_system.id }))
+    document.add_tags(params[:tags]) if params[:tags].present?
+    respond_with document
   end
 
   def owner
