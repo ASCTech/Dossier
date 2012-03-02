@@ -11,7 +11,9 @@ class DocumentsController < ApplicationController
     documents = Document.from_system(requesting_system)
     if params[:tags].present?
       tag_names_and_ids = params[:tags].split(',')
-      tags = Tag.where(:id => tag_names_and_ids) + Tag.where(:name => tag_names_and_ids)
+      tag_ids   = tag_names_and_ids.map(&:to_i).reject{|e| e == 0}.uniq
+      tag_names = tag_names_and_ids.reject{|e| e =~ /[^\D]/}.uniq
+      tags = Tag.where('id IN (?) OR name IN (?)', tag_ids, tag_names)
       document_ids = DocumentTag.where(:tag_id => tags).pluck(:document_id).uniq
       documents = documents.where(:id => document_ids)
     end
