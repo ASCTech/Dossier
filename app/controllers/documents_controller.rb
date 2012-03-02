@@ -8,7 +8,14 @@ class DocumentsController < ApplicationController
   rescue_from Document::NotAuthorized,      :with => :document_not_authorized
 
   def index
-    respond_with Document.from_system(requesting_system)
+    documents = Document.from_system(requesting_system)
+    if params[:tags].present?
+      tag_names_and_ids = params[:tags].split(',')
+      tags = Tag.where(:id => tag_names_and_ids) + Tag.where(:name => tag_names_and_ids)
+      document_ids = DocumentTag.where(:tag_id => tags).pluck(:document_id).uniq
+      documents = documents.where(:id => document_ids)
+    end
+    respond_with documents
   end
 
   def show
