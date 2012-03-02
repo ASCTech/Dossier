@@ -13,4 +13,11 @@ class TagsController < ApplicationController
     respond_with document
   end
 
+  def destroy
+    document = Document.find(params[:document_id])
+    tag = Tag.find_by_name(params[:id]) || Tag.find(params[:id])
+    document.document_tags.find_by_tag_id(tag.id).destroy rescue
+    respond_with document
+  end
+
 end
