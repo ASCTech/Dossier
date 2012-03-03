@@ -32,6 +32,10 @@ class Document < ActiveRecord::Base
     end
   end
 
+  def self.has_tag(tag)
+    where(:id => DocumentTag.where(:tag_id => tag.id).pluck(:document_id))
+  end
+
   class NotAuthorized < StandardError; end
 
 end

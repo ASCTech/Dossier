@@ -13,9 +13,18 @@ class DocumentsController < ApplicationController
       tag_names_and_ids = params[:tags].split(',')
       tag_ids   = tag_names_and_ids.map(&:to_i).reject{|e| e == 0}.uniq
       tag_names = tag_names_and_ids.reject{|e| e =~ /[^\D]/}.uniq
-      tags = Tag.where('id IN (?) OR name IN (?)', tag_ids, tag_names)
-      document_ids = DocumentTag.where(:tag_id => tags).pluck(:document_id).uniq
-      documents = documents.where(:id => document_ids)
+      if params[:operator] =~ /^or$/i
+        tags = Tag.where('id IN (?) OR name IN (?)', tag_ids, tag_names)
+        document_ids = DocumentTag.where(:tag_id => tags).pluck(:document_id).uniq
+        documents = documents.where(:id => document_ids)
+      else
+        named_tags = Tag.find_all_by_name(tag_names)
+        raise ActiveRecord::RecordNotFound unless named_tags.size == tag_names.size
+        tags = Tag.find(tag_ids) + named_tags
+        tags.each do |tag|
+          documents = documents.has_tag(tag)
+        end
+      end
     end
     respond_with documents
   end

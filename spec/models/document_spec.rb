@@ -3,10 +3,10 @@ require 'spec_helper'
 describe Document do
 
   let(:document) { create(:document) }
+  let(:tag)      { create(:tag) }
 
   describe 'adding tags' do
 
-    let(:tag) { create(:tag) }
 
     it 'should create tags on the fly' do
       Tag.where(:name => 'cool').should_not exist
@@ -32,6 +32,26 @@ describe Document do
       document.document_tags.create!(:tag_id => tag.id)
       document.document_tags.new(:tag_id => tag.id).should_not be_valid
       create(:document).document_tags.new(:tag_id => tag.id).should be_valid
+    end
+
+  end
+
+  describe 'filtering by tags' do
+
+    it 'should know which documents have a tag' do
+      Document.has_tag(tag).should_not exist
+
+      document.document_tags.create!(:tag_id => tag.id)
+      Document.has_tag(tag).should include document
+    end
+
+    it 'should know which documents have a set of tags' do
+      tag2 = create(:tag, :name => 'Algebraic')
+      Document.has_tag(tag).has_tag(tag2).should_not exist
+      document.document_tags.create!(:tag_id => tag.id)
+      Document.has_tag(tag).has_tag(tag2).should_not exist
+      document.document_tags.create!(:tag_id => tag2.id)
+      Document.has_tag(tag).has_tag(tag2).should include document
     end
 
   end
