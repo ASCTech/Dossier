@@ -36,6 +36,10 @@ class Document < ActiveRecord::Base
     where(:id => DocumentTag.where(:tag_id => tag.id).pluck(:document_id))
   end
 
+  def self.owned_by(oid)
+    where(:owner_id => oid)
+  end
+
   class NotAuthorized < StandardError; end
 
 end

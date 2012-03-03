@@ -26,6 +26,9 @@ class DocumentsController < ApplicationController
         end
       end
     end
+    if params[:owner_id].present?
+      documents = documents.owned_by(params[:owner_id])
+    end
     respond_with documents
   end
 
@@ -42,10 +45,6 @@ class DocumentsController < ApplicationController
     document = Document.create(params[:document].merge({ :source_system_id => requesting_system.id }))
     document.add_tags(params[:tags]) if params[:tags].present?
     respond_with document
-  end
-
-  def owner
-    respond_with Document.from_system(requesting_system).where(:owner_id => params[:owner_id])
   end
 
   def destroy
