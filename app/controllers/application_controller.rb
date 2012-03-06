@@ -10,8 +10,8 @@ protected
   def render_error(status, message)
     respond_to do |format|
       format.html { render :file => "#{Rails.root}/public/#{status}.html", :status => status, :layout => false }
-      format.json { render :json => { :error => true, :message => message } }
-      format.xml  { render :xml  => { :error => true, :message => message } }
+      format.json { render :json => { :error => true, :message => message }, :status => status }
+      format.xml  { render :xml  => { :error => true, :message => message }, :status => status }
     end
   end
 end
