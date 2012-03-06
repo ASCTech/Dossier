@@ -15,7 +15,8 @@
 /tmp
 
 .DS_Store
-database.yml
+/config/database.yml
+/config/deploy.rb
 
 /uploads
 /public/uploads
