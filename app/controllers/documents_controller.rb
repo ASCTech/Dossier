@@ -42,8 +42,9 @@ class DocumentsController < ApplicationController
   end
 
   def create
+    tags_param = params[:document].delete(:tags)
     document = Document.create(params[:document].merge({ :source_system_id => requesting_system.id }))
-    document.add_tags(params[:tags]) if params[:tags].present?
+    document.add_tags(tags_param) unless tags_param.nil?
     respond_with document
   end
 
