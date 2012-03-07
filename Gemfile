@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.1'
+gem 'rails'
 
 gem 'sqlite3', :group => [:test, :development]
 gem 'mysql2',  :group => [:production]
@@ -10,10 +10,10 @@ gem 'jquery-rails'
 gem 'json'
 
 group :assets do
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'sass-rails',   '~> 3.2.3'
+  gem 'coffee-rails'
+  gem 'sass-rails'
   gem 'twitter-bootstrap-rails'
-  gem 'uglifier',     '>= 1.0.3'
+  gem 'uglifier'
 end
 
 group :development, :production do
