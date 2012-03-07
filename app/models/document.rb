@@ -18,7 +18,7 @@ class Document < ActiveRecord::Base
     options = {} if options.nil?
     options[:except] = :file
     options[:include] = :tags
-    options[:methods] = :all_tags
+    options[:methods] = :all_tags, :filename
     super options
   end
 
@@ -30,6 +30,10 @@ class Document < ActiveRecord::Base
     string_of_tags.split(',').each do |tag_name|
       document_tags.create!(:tag_id => Tag.find_or_create_by_name(tag_name).id)
     end
+  end
+
+  def filename
+    file.url.split('/').last
   end
 
   def self.has_tag(tag)
