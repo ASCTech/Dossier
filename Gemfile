@@ -27,6 +27,7 @@ end
 
 group :development do
   gem 'capistrano'
+  gem 'thin'
 end
 
 group :test do
