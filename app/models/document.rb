@@ -53,10 +53,7 @@ class Document < ActiveRecord::Base
   private
 
   def write_file
-
-    if @file_content.nil?
-      filename = file.url.split('/').last if filename.nil?
-    else
+    unless @file_content.nil?
       tmpfile = Tempfile.new('upload', Rails.root.join('tmp'), :encoding => 'BINARY')
       begin
         tmpfile.write(Base64.decode64(@file_content.force_encoding("BINARY")))

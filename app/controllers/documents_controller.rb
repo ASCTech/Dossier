@@ -43,6 +43,7 @@ class DocumentsController < ApplicationController
 
   def create
     tags_param = params[:document].delete(:tags)
+    params[:document].merge!({:content_type => params[:document][:file].content_type, :filename => params[:document][:file].original_filename }) if params[:document][:file].present?
     document = Document.create(params[:document].merge({ :source_system_id => requesting_system.id }))
     document.add_tags(tags_param) unless tags_param.nil?
     respond_with document
