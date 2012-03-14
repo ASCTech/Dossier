@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120314201611) do
+ActiveRecord::Schema.define(:version => 20120314203121) do
 
   create_table "document_tags", :force => true do |t|
     t.integer  "document_id"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20120314201611) do
     t.datetime "created_at",       :null => false
     t.string   "file"
     t.string   "filename"
+    t.string   "content_type"
   end
 
   add_index "documents", ["owner_id"], :name => "index_documents_on_owner_id"

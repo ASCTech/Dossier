@@ -8,7 +8,7 @@ class Document < ActiveRecord::Base
 
   mount_uploader :file, FileUploader
 
-  attr_accessor :content_type, :file_content
+  attr_accessor :file_content
 
   before_validation :write_file
 
@@ -50,10 +50,6 @@ class Document < ActiveRecord::Base
     @file_content = file_source
   end
 
-  def content_type=(content_type)
-    @content_type = content_type
-  end
-
   private
 
   def write_file
@@ -65,7 +61,7 @@ class Document < ActiveRecord::Base
       begin
         tmpfile.write(Base64.decode64(@file_content.force_encoding("BINARY")))
         wave_file = CarrierWave::SanitizedFile.new(tmpfile)
-        wave_file.content_type = @content_type
+        wave_file.content_type = self.content_type
         self.file = wave_file
       ensure
         tmpfile.close!
