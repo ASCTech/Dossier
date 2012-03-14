@@ -24,7 +24,7 @@ class Document < ActiveRecord::Base
     options = {} if options.nil?
     options[:except] = :file
     options[:include] = :tags
-    options[:methods] = :all_tags, :filename
+    options[:methods] = :all_tags
     super options
   end
 
@@ -36,10 +36,6 @@ class Document < ActiveRecord::Base
     string_of_tags.split(',').each do |tag_name|
       document_tags.create!(:tag_id => Tag.find_or_create_by_name(tag_name).id)
     end
-  end
-
-  def filename
-    file.url.split('/').last
   end
 
   def self.has_tag(tag)
@@ -61,14 +57,19 @@ class Document < ActiveRecord::Base
   private
 
   def write_file
-    tmpfile = Tempfile.new('upload', Rails.root.join('tmp'), :encoding => 'BINARY')
-    begin
-      tmpfile.write(Base64.decode64(@file_content.force_encoding("BINARY")))
-      wave_file = CarrierWave::SanitizedFile.new(tmpfile)
-      wave_file.content_type = @content_type
-      self.file = wave_file
-    ensure
-      tmpfile.close!
+
+    if @file_content.nil?
+      filename = file.url.split('/').last if filename.nil?
+    else
+      tmpfile = Tempfile.new('upload', Rails.root.join('tmp'), :encoding => 'BINARY')
+      begin
+        tmpfile.write(Base64.decode64(@file_content.force_encoding("BINARY")))
+        wave_file = CarrierWave::SanitizedFile.new(tmpfile)
+        wave_file.content_type = @content_type
+        self.file = wave_file
+      ensure
+        tmpfile.close!
+      end
     end
   end
 
