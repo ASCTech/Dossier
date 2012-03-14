@@ -1,10 +1,16 @@
 class Document < ActiveRecord::Base
 
+  class NotAuthorized < StandardError; end
+
   belongs_to :source_system
   has_many :document_tags, :dependent => :destroy
   has_many :tags, :through => :document_tags
 
   mount_uploader :file, FileUploader
+
+  attr_accessor :content_type, :file_content
+
+  before_validation :write_file
 
   def self.from_system(system)
     where(:source_system_id => system.id)
@@ -44,6 +50,26 @@ class Document < ActiveRecord::Base
     where(:owner_id => oid)
   end
 
-  class NotAuthorized < StandardError; end
+  def file_as_base64=(file_source)
+    @file_content = file_source
+  end
+
+  def content_type=(content_type)
+    @content_type = content_type
+  end
+
+  private
+
+  def write_file
+    tmpfile = Tempfile.new('upload', Rails.root.join('tmp'), :encoding => 'BINARY')
+    begin
+      tmpfile.write(Base64.decode64(@file_content.force_encoding("BINARY")))
+      wave_file = CarrierWave::SanitizedFile.new(tmpfile)
+      wave_file.content_type = @content_type
+      self.file = wave_file
+    ensure
+      tmpfile.close!
+    end
+  end
 
 end
