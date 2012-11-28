@@ -1,6 +1,13 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
+  before_filter :require_api_key
+
+  respond_to :xml, :json
+
+  rescue_from ActiveRecord::RecordNotFound, :with => :document_not_found
+  rescue_from Document::NotAuthorized,      :with => :document_not_authorized
+
 protected
 
   def requesting_system
@@ -13,5 +20,17 @@ protected
       format.json { render :json => { :error => true, :message => message }, :status => status }
       format.xml  { render :xml  => { :error => true, :message => message }, :status => status }
     end
+  end
+
+  def require_api_key
+    render_error 401, 'You do not have a valid API key' unless requesting_system
+  end
+
+  def document_not_authorized(exception)
+    render_error 401, exception.message
+  end
+
+  def document_not_found
+    render_error 404, "Document not found"
   end
 end

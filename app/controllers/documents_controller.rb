@@ -1,30 +1,16 @@
 class DocumentsController < ApplicationController
 
-  before_filter :require_api_key
-
-  respond_to :xml, :json
-
-  rescue_from ActiveRecord::RecordNotFound, :with => :document_not_found
-  rescue_from Document::NotAuthorized,      :with => :document_not_authorized
-
   def index
     documents = Document.from_system(requesting_system)
 
     if params[:tags].present?
-      tag_names_and_ids = params[:tags].split(',')
-      tag_ids   = tag_names_and_ids.map(&:to_i).reject{|e| e == 0}.uniq
-      tag_names = tag_names_and_ids.reject{|e| e =~ /[^\D]/}.uniq
+      tag_names = params[:tags].split(',')
 
       if params[:operator] =~ /^or$/i
-        documents.joins(:tags).where('tags.id IN (?) OR tags.name IN (?)', tag_ids, tag_names)
+        documents.joins(:tags).where('tags.name IN (?)', tag_names)
       else
-        named_tags = Tag.find_all_by_name(tag_names)
-        raise ActiveRecord::RecordNotFound unless named_tags.size == tag_names.size
-
-        id_tags = Tag.find(tag_ids)
-        raise ActiveRecord::RecordNotFound unless id_tags.size == tag_ids.size
-
-        tags = id_tags + named_tags
+        tags = Tag.find_all_by_name(tag_names)
+        raise ActiveRecord::RecordNotFound unless tags.size == tag_names.size
         documents = documents.has_tags(tags)
       end
 
@@ -54,20 +40,6 @@ class DocumentsController < ApplicationController
 
   def destroy
     respond_with requesting_system.get_document(params[:id]).destroy
-  end
-
-private
-
-  def require_api_key
-    render_error 401, 'You do not have a valid API key' unless requesting_system
-  end
-
-  def document_not_found
-    render_error 404, "Document with ID #{params[:id]} not found"
-  end
-
-  def document_not_authorized(exception)
-    render_error 401, exception.message
   end
 
 end
