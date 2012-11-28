@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rails'
 
 gem 'sqlite3', :group => [:test, :development]
-gem 'mysql2',  :group => [:production]
+gem 'mysql2',  :group => [:production, :staging]
 
 gem 'carrierwave'
 gem 'jquery-rails'
@@ -12,11 +12,12 @@ gem 'json'
 group :assets do
   gem 'coffee-rails'
   gem 'sass-rails'
+  gem 'turbo-sprockets-rails3'
   gem 'twitter-bootstrap-rails'
   gem 'uglifier'
 end
 
-group :development, :production do
+group :production, :staging do
   gem 'therubyracer'
 end
 
@@ -27,6 +28,7 @@ end
 
 group :development do
   gem 'capistrano'
+  gem 'rvm-capistrano'
   gem 'thin'
 end
 
