@@ -9,6 +9,8 @@ class Document < ActiveRecord::Base
 
   mount_uploader :file, FileUploader
 
+  default_scope :order => 'created_at DESC'
+
   attr_accessor :file_content
 
   before_validation :write_file
