@@ -43,16 +43,16 @@ class Document < ActiveRecord::Base
   end
 
   def file_as_base64=(file_source)
-    @file_content = file_source
+    @file_content_base_64 = file_source
   end
 
   private
 
   def write_file
-    unless @file_content.nil?
+    unless @file_content_base_64.nil?
       tmpfile = Tempfile.new('upload', Rails.root.join('tmp'), :encoding => 'BINARY')
       begin
-        tmpfile.write(Base64.decode64(@file_content.force_encoding("BINARY")))
+        tmpfile.write(Base64.decode64(@file_content_base_64.force_encoding("BINARY")))
         wave_file = CarrierWave::SanitizedFile.new(tmpfile)
         wave_file.content_type = self.content_type
         self.file = wave_file
