@@ -14,18 +14,16 @@ class DocumentsController < ApplicationController
   end
 
   def file
-    doc_file = requesting_system.documents.find(params[:document_id])
-    send_file(doc_file.current_path, :filename => doc_file.identifier)
+    document = requesting_system.documents.find(params[:document_id])
+    send_file(document.file.path, :filename => document.filename, :type => document.content_type)
   end
 
   def create
-    raise Document::FileRequiredForCreation unless params[:document][:file].present?
+    raise Document::FileRequiredForCreation unless params[:document][:file_as_base64].present?
 
     tags_param = params[:document].delete(:tags)
 
-    document                  = Document.build(params[:document])
-    document.content_type     = params[:document][:file].content_type
-    document.filename         = params[:document][:file].original_filename
+    document = Document.new(params[:document])
     document.source_system_id = requesting_system.id
     document.save
 
