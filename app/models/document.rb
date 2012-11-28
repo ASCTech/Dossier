@@ -1,6 +1,7 @@
 class Document < ActiveRecord::Base
 
   class NotAuthorized < StandardError; end
+  class FileRequiredForCreation < StandardError; end
 
   belongs_to :source_system
   has_many :document_tags, :dependent => :destroy
@@ -23,7 +24,6 @@ class Document < ActiveRecord::Base
   def serializable_hash(options=nil)
     options = {} if options.nil?
     options[:except] = :file
-    options[:include] = :tags
     options[:methods] = :all_tags
     super options
   end
@@ -36,10 +36,6 @@ class Document < ActiveRecord::Base
     string_of_tags.split(',').each do |tag_name|
       tags << Tag.find_or_create_by_name(tag_name)
     end
-  end
-
-  def self.has_tag(tag)
-    where(:id => DocumentTag.where(:tag_id => tag.id).pluck(:document_id))
   end
 
   def self.owned_by(oid)
