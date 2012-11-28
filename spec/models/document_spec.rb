@@ -40,7 +40,7 @@ describe Document do
     it 'should know which documents have a tag' do
       Document.has_tag(tag).should_not exist
 
-      document.document_tags.create!(:tag_id => tag.id)
+      document.tags << tag
       Document.has_tag(tag).should include document
     end
 
