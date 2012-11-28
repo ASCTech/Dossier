@@ -9,26 +9,29 @@ class DocumentsController < ApplicationController
 
   def index
     documents = Document.from_system(requesting_system)
+
     if params[:tags].present?
       tag_names_and_ids = params[:tags].split(',')
       tag_ids   = tag_names_and_ids.map(&:to_i).reject{|e| e == 0}.uniq
       tag_names = tag_names_and_ids.reject{|e| e =~ /[^\D]/}.uniq
+
       if params[:operator] =~ /^or$/i
-        tags = Tag.where('id IN (?) OR name IN (?)', tag_ids, tag_names)
-        document_ids = DocumentTag.where(:tag_id => tags).pluck(:document_id).uniq
-        documents = documents.where(:id => document_ids)
+        documents.joins(:tags).where('tags.id IN (?) OR tags.name IN (?)', tag_ids, tag_names)
       else
         named_tags = Tag.find_all_by_name(tag_names)
         raise ActiveRecord::RecordNotFound unless named_tags.size == tag_names.size
-        tags = Tag.find(tag_ids) + named_tags
-        tags.each do |tag|
-          documents = documents.has_tag(tag)
-        end
+
+        id_tags = Tag.find(tag_ids)
+        raise ActiveRecord::RecordNotFound unless id_tags.size == tag_ids.size
+
+        tags = id_tags + named_tags
+        documents = documents.has_tags(tags)
       end
+
     end
-    if params[:owner_id].present?
-      documents = documents.owned_by(params[:owner_id])
-    end
+    
+    documents = documents.owned_by(params[:owner_id]) if params[:owner_id].present?
+
     respond_with documents
   end
 
@@ -56,8 +59,7 @@ class DocumentsController < ApplicationController
 private
 
   def require_api_key
-    return if requesting_system
-    render_error 401, 'You do not have a valid API key'
+    render_error 401, 'You do not have a valid API key' unless requesting_system
   end
 
   def document_not_found

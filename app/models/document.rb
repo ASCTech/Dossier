@@ -34,7 +34,7 @@ class Document < ActiveRecord::Base
 
   def add_tags(string_of_tags)
     string_of_tags.split(',').each do |tag_name|
-      document_tags.create!(:tag_id => Tag.find_or_create_by_name(tag_name).id)
+      tags << Tag.find_or_create_by_name(tag_name)
     end
   end
 
