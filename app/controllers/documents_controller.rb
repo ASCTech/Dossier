@@ -4,7 +4,7 @@ class DocumentsController < ApplicationController
 
   def index
     documents = Document.from_system(requesting_system)
-    documents.joins(:tags).where('tags.name IN (?)', params[:tags].split(',')) if params[:tags].present?
+    documents = documents.joins(:tags).where('tags.name IN (?)', params[:tags].split(',')) if params[:tags].present?
     documents = documents.owned_by(params[:owner_id]) if params[:owner_id].present?
     respond_with documents
   end
