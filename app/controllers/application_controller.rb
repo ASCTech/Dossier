@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
 protected
 
   def requesting_system
-    @source_system ||= SourceSystem.find_by_api_key(request.headers['x-api-key'])
+    @source_system ||= SourceSystem.find_by_api_key(request.headers['x-api-key'] || params['api_key'])
   end
 
   def render_error(status, message)
