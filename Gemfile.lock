@@ -179,7 +179,7 @@ DEPENDENCIES
   json
   launchy
   mysql2
-  rails (= 3.2.11)
+  rails
   rspec
   rspec-rails
   rvm-capistrano
