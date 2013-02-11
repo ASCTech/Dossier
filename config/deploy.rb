@@ -17,29 +17,28 @@ set :branch, $1 if `git branch` =~ /\* (\S+)\s/m
 set :deploy_via, :remote_cache
 
 set :user, 'deploy'
-set :ssh_options, { :forward_agent => true, :port => 2200 }
+set :ssh_options, { :forward_agent => true }
 
 task :staging do
   set :rails_env, 'staging'
-  role :app, "ruby-test.asc.ohio-state.edu"
-  role :web, "ruby-test.asc.ohio-state.edu"
-  role :db,  "ruby-test.asc.ohio-state.edu", :primary => true
+  role :app, "apps-s.asc.ohio-state.edu"
+  role :web, "apps-s.asc.ohio-state.edu"
+  role :db,  "apps-s.asc.ohio-state.edu", :primary => true
 end
 
 task :production do
   set :rails_env, 'production'
   set :branch, 'master'
-  set :rvm_type, :user
 
-  role :app, "ruby.asc.ohio-state.edu"
-  role :web, "ruby.asc.ohio-state.edu"
-  role :db,  "ruby.asc.ohio-state.edu", :primary => true
+  role :app, "appservices.asc.ohio-state.edu"
+  role :web, "appservices.asc.ohio-state.edu"
+  role :db,  "appservices.asc.ohio-state.edu", :primary => true
 end
 
 namespace :deploy do
   task :start do ; end
   task :stop do ; end
-  desc "Restarting mod_rails with restart.txt"
+  desc "Restarting passenger with restart.txt"
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
   end
