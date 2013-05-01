@@ -1,6 +1,6 @@
 Dossier::Application.routes.draw do
 
-  resources :documents, :only => [:index, :show, :create, :destroy] do
+  resources :documents, :only => [:index, :show, :create, :destroy, :update] do
     get 'file'
   end
 

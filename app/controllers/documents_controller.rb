@@ -9,6 +9,13 @@ class DocumentsController < ApplicationController
     respond_with documents
   end
 
+  def update
+    @document = requesting_system.documents.find(params[:id])
+    @document.update_attribute :description, params[:document][:description]
+
+    respond_with @document
+  end
+
   def show
     respond_with requesting_system.documents.find(params[:id])
   end
